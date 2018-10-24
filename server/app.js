@@ -15,7 +15,7 @@ require('./middleware/middleware')(app);
 // Todo API
 app.use('/api/todos', todoRouter);
 // User API
-app.use('/api/users', userRouter)
+app.use('/api/users', userRouter);
 
 
 // Starting a server
