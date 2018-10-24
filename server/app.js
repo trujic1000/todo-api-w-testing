@@ -2,9 +2,8 @@ const express = require('express');
 
 // Connection to the database
 const { mongoose } = require('./db/mongoose');
-
-const { todoRouter } = require('./todo/todoRouter');
-const { userRouter } = require('./user/userRouter');
+// API Router
+const { router } = require('./router/router');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -12,11 +11,8 @@ const port = process.env.PORT || 3000;
 // Basic Middlewares
 require('./middleware/middleware')(app);
 
-// Todo API
-app.use('/api/todos', todoRouter);
-// User API
-app.use('/api/users', userRouter);
-
+// API router
+app.use('/api', router);
 
 // Starting a server
 app.listen(port, () => {
