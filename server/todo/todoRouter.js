@@ -7,6 +7,7 @@ todoRouter.route('/')
   .get(todoController.getTodos);
 todoRouter.route('/:id')
   .get(todoController.getTodo)
-  .delete(todoController.deleteTodo);
+  .delete(todoController.deleteTodo)
+  .patch(todoController.updateTodo);
 
 module.exports = { todoRouter };
