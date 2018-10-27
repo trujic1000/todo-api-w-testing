@@ -26,6 +26,7 @@ beforeEach(done => {
   }).then(() => done());
 });
 
+// POST /API/TODOS
 describe('POST /api/todos', () => {
   it('should create a new todo', done => {
     const text = 'Test todo text';
@@ -68,6 +69,7 @@ describe('POST /api/todos', () => {
   });
 });
 
+// GET /API/TODOS
 describe('GET /api/todos', () => {
   it('should fetch all todos', done => {
     request(app)
@@ -80,9 +82,10 @@ describe('GET /api/todos', () => {
   });
 });
 
+// GET /API/TODOS/:ID
 describe('GET /api/todos/:id', () => {
 
-  it('should return 400 if id is invalid', done => {
+  it('should return 400 if ObjectID is invalid', done => {
     const invalidId = '123abc';
 
     request(app)
@@ -106,6 +109,47 @@ describe('GET /api/todos/:id', () => {
 
     request(app)
     .get(`/api/todos/${validId}`)
+    .expect(404)
+    .end(done);
+  });
+});
+
+// DELETE /API/TODOS/:ID
+describe('DELETE /api/todos/:id', () => {
+  it('should return 400 if ObjectID is invalid', done => {
+    const invalidId = '123abc';
+
+    request(app)
+      .delete(`/api/todos/${invalidId}`)
+      .expect(400)
+      .end(done);
+  });
+
+  it('should remove a todo', done => {
+    const todoId = todos[0]._id.toHexString();
+    request(app)
+      .delete(`/api/todos/${todoId}`)
+      .expect(200)
+      .expect(res => {
+        expect(res.body.deletedTodo._id).toBe(todoId);
+      })
+      .end((error, response) => {
+        if(error) {
+          return done(error);
+        }
+        // Query database to confirm that todo is actually deleted
+        Todo.findById(todoId).then(todo => {
+          expect(todo).toNotExist();
+          done();
+        }).catch(err => done(err));
+      });
+  });
+
+  it('should return 404 if todo not found', done => {
+    const validId = new ObjectID().toHexString();
+
+    request(app)
+    .delete(`/api/todos/${validId}`)
     .expect(404)
     .end(done);
   });
