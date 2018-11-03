@@ -45,12 +45,9 @@ UserSchema.pre('save', function (next) {
   }
 });
 
-UserSchema.statics.getUserByUsername = async function (username) {
-  try {
-    const user = await User.findOne({username});
-  } catch (error) {
-    console.log('Username is wrong');
-  }
+UserSchema.methods.verifyPassword = function(password) {
+  const user = this;
+  bcrypt.compare(password, user.password, (err, result) => result);
 }
 
 const User = mongoose.model('User', UserSchema);
